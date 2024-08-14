@@ -4,3 +4,8 @@ spring:
         name: springbootLearning
 server:
     port: 7899
+
+# 下面是 swagger 配置开启或关闭的配置项
+# springdoc:
+#     api-docs:
+#         enabled: false
