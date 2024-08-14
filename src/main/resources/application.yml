@@ -1,0 +1,6 @@
+# spring.application.name=springbootLearning
+spring:
+    application:
+        name: springbootLearning
+server:
+    port: 7899
