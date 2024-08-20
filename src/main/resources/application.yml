@@ -1,4 +1,6 @@
 # spring.application.name=springbootLearning
+server:
+    port: 6789
 spring:
     application:
         name: springbootLearning
@@ -7,10 +9,13 @@ spring:
         username: root
         password: 12345678
         driver-class-name: com.mysql.cj.jdbc.Driver
-server:
-    port: 7899
+    jpa:
+        hibernate:
+            ddl-auto: update
 
-
+mybatis-plus:
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 # 下面是 swagger 配置开启或关闭的配置项

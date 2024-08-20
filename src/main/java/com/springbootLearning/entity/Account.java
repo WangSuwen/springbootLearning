@@ -8,6 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * 这个实例对象是用 JPA 创建的
+ */
+
 @Schema(description = "用户信息实体类")
 @Entity
 @Table(name = "account")

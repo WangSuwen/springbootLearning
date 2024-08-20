@@ -18,7 +18,7 @@ public class SwaggerConfiguration {
                         .version("1.0.0")
                         .license(
                             new License().name("项目测试环境首页")
-                                .url("http://localhost:8080/swagger-ui/index.html")
+                                .url("http://localhost:6789/swagger-ui/index.html")
                         )
                     );
     }
