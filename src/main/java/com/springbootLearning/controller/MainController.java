@@ -1,8 +1,10 @@
 package com.springbootLearning.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.springbootLearning.dto.UserAddDTO;
 import com.springbootLearning.entity.User;
 import com.springbootLearning.mapper.UserMapper;
+import com.springbootLearning.utils.ResultResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.Map;
 
 
 @Controller
@@ -48,7 +49,7 @@ public class MainController {
      */
     @ResponseBody
     @PostMapping(value = "/add", consumes = "application/json")
-    public Object addUser(
+    public ResultResponse addUser(
             @Valid @RequestBody UserAddDTO param
     ) {
         User user = new User();
@@ -57,9 +58,22 @@ public class MainController {
         user.setPassword(param.getPassword());
         int uc = userMapper.insert(user);
         if (uc == 1) {
-            return user;
+            return ResultResponse.success(user);
         } else {
-            return null;
+            return ResultResponse.success(null);
         }
+    }
+
+    @ResponseBody
+    @GetMapping("/get")
+    public ResultResponse get(
+            @RequestParam String name
+    ) {
+        if (name == null || name.trim().isEmpty()) {
+            return ResultResponse.failed(ResultResponse.PARAMS_ERROR, ResultResponse.PARAMS_ERROR_MSG, "请输入姓名");
+        }
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        User user = userMapper.selectOne(qw.eq("name", name));
+        return  ResultResponse.success(user);
     }
 }
