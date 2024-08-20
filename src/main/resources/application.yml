@@ -2,10 +2,37 @@
 spring:
     application:
         name: springbootLearning
+    datasource:
+        url: jdbc:mysql://localhost:3306/spring_boot_db
+        username: root
+        password: 12345678
+        driver-class-name: com.mysql.cj.jdbc.Driver
 server:
     port: 7899
+
+
+
 
 # 下面是 swagger 配置开启或关闭的配置项
 # springdoc:
 #     api-docs:
 #         enabled: false
+
+# 下面是项目运行监控，慎重使用，会泄露服务器系统信息
+# management:
+#     endpoints:
+#         web:
+#             exposure:
+#                 include: "*"
+#     info:
+#         env:
+#             enabled: true
+#         os:
+#             enabled: true
+#         java:
+#             enabled: true
+#     endpoint:
+#         health:
+#             show-details: always
+#         env:
+#             show-values: always
