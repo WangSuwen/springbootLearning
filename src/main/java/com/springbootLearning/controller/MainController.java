@@ -44,8 +44,6 @@ public class MainController {
 
     /**
      * 添加用户，使用 application/json 方式传参，并校验某一个参数的必填性
-     * @param param
-     * @return
      */
     @ResponseBody
     @PostMapping(value = "/add", consumes = "application/json")

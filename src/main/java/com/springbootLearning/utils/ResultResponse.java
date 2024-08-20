@@ -2,8 +2,6 @@ package com.springbootLearning.utils;
 
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 public class ResultResponse<T> {
