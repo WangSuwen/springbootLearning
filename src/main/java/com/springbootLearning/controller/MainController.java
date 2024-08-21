@@ -99,12 +99,7 @@ public class MainController {
                         .select("id", "name", "email")
         );
         // TODO: 通过DTO类，构建只需要返给前端的字段，屏蔽掉User类中其他字段名，不需要将所有字段都返给前端（返给前端时，这些不需要的字段的值都是null）
-        Page<UserListDTO> userListDTOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
-        List<UserListDTO> userListDTO = userPage.getRecords().stream().map(user -> {
-            return new UserListDTO(user.getId(), user.getName(), user.getEmail());
-        }).toList();
-        userListDTOPage.setRecords(userListDTO);
-        return  ResultResponse.success(userListDTOPage);
+        return getResultResponse(userPage);
     }
 
 //    TODO: 通过继承自 IService 接口的 service 查询数据
@@ -123,6 +118,10 @@ public class MainController {
                         .select("id", "name", "email")
         );
 
+        return getResultResponse(userPage);
+    }
+
+    private ResultResponse getResultResponse(Page<User> userPage) {
         Page<UserListDTO> userListDTOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
         List<UserListDTO> userListDTOS = userPage.getRecords().stream().map(user -> {
             return new UserListDTO(user.getId(), user.getName(), user.getEmail());
@@ -130,7 +129,6 @@ public class MainController {
         userListDTOPage.setRecords(userListDTOS);
         return ResultResponse.success(userListDTOPage);
     }
-
 
 
 }
