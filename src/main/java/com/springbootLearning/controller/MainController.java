@@ -1,11 +1,15 @@
 package com.springbootLearning.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.springbootLearning.dto.UserAddDTO;
+import com.springbootLearning.dto.UserListDTO;
 import com.springbootLearning.entity.User;
 import com.springbootLearning.mapper.UserMapper;
 import com.springbootLearning.utils.ResultResponse;
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +22,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/user")
@@ -73,5 +78,28 @@ public class MainController {
         QueryWrapper<User> qw = new QueryWrapper<>();
         User user = userMapper.selectOne(qw.eq("name", name));
         return  ResultResponse.success(user);
+    }
+
+    @ResponseBody
+    @GetMapping("/list")
+    public ResultResponse getList(
+            @RequestParam(defaultValue = "1") long current,
+            @RequestParam(defaultValue = "10") long size,
+            @RequestParam(required = false) String name
+    ) {
+        Page<User> userPage = userMapper.selectPage(
+                Page.of(current, size),
+                Wrappers.<User>query()
+                        .eq((name != null && !name.equals("")), "name", name)
+                        .orderByDesc("id")
+                        .select("id", "name", "email")
+        );
+        // TODO: 通过DTO类，构建只需要返给前端的字段，屏蔽掉User类中其他字段名，不需要将所有字段都返给前端（返给前端时，这些不需要的字段的值都是null）
+        Page<UserListDTO> userDtoPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
+        List<UserListDTO> userListDTO = userPage.getRecords().stream().map(user -> {
+            return new UserListDTO(user.getId(), user.getName(), user.getEmail());
+        }).toList();
+        userDtoPage.setRecords(userListDTO);
+        return  ResultResponse.success(userDtoPage);
     }
 }
