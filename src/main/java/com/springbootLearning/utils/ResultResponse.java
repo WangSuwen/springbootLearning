@@ -17,7 +17,7 @@ public class ResultResponse<T> {
 
 
     // 构造函数
-    public ResultResponse(int code, T data, String msg) {
+    private ResultResponse(int code, T data, String msg) {
         this.code = code;
         this.data = data;
         this.msg = msg;
