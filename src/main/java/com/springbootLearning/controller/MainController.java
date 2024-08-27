@@ -8,6 +8,7 @@ import com.springbootLearning.dto.UserListDTO;
 import com.springbootLearning.entity.User;
 import com.springbootLearning.mapper.UserMapper;
 import com.springbootLearning.service.UserService;
+import com.springbootLearning.utils.ResultEnum;
 import com.springbootLearning.utils.ResultResponse;
 import jakarta.validation.Valid;
 
@@ -76,7 +77,7 @@ public class MainController {
             @RequestParam String name
     ) {
         if (name == null || name.trim().isEmpty()) {
-            return ResultResponse.failed(ResultResponse.PARAMS_ERROR, ResultResponse.PARAMS_ERROR_MSG, "请输入姓名");
+            return ResultResponse.failed(ResultEnum.PARAMS_ERROR.valueOf(), ResultEnum.PARAMS_ERROR.getMsg(), "请输入姓名");
         }
         QueryWrapper<User> qw = new QueryWrapper<>();
         User user = userMapper.selectOne(qw.eq("name", name));

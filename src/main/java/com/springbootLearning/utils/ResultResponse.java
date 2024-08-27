@@ -25,7 +25,7 @@ public class ResultResponse<T> {
 
     // 静态方法用于快速构造成功响应
     public static <T> ResultResponse<T> success(T data) {
-        return new ResultResponse<>(200, data, "请求成功");
+        return new ResultResponse<>(ResultEnum.SUCCESS.valueOf(), data, ResultEnum.SUCCESS.getMsg());
     }
 
     // 静态方法用于快速构造失败响应
