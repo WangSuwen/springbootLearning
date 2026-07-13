@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 
 /**
  * 这个实例对象是用 MyBatis-Plus 创建的
@@ -21,17 +23,22 @@ public class User {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @TableId(type = IdType.AUTO)
-    int id;
+    Long id;
 
     @TableField("name")
-    @Column(name = "name")
     String name;
 
-    @Column(name = "email")
     @TableField("email")
     String email;
 
-    @Column(name = "password")
     @TableField("password")
     String password;
+
+    // 默认为当前时间
+    @TableField(fill = FieldFill.INSERT, value = "create_time")
+    LocalDateTime createTime;
+
+    // FieldFill.INSERT_UPDATE 注解，自动生成 updateTime 字段
+    @TableField(fill = FieldFill.INSERT_UPDATE, value = "update_time")
+    LocalDateTime updateTime;
 }

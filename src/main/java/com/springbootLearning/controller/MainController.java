@@ -10,10 +10,15 @@ import com.springbootLearning.mapper.UserMapper;
 import com.springbootLearning.service.UserService;
 import com.springbootLearning.utils.ResultEnum;
 import com.springbootLearning.utils.ResultResponse;
+import com.springbootLearning.vo.UserListVO;
+
+
 import jakarta.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.springbootLearning.entity.Account;
@@ -24,9 +29,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
-@Controller
+@RestController
 @RequestMapping("/api/user")
 @Tag(name = "用户登录相关接口", description = "注册、登录、登出、修改密码、获取用户信息、发送短信等接口")
 public class MainController {
@@ -42,7 +49,7 @@ public class MainController {
         @ApiResponse(responseCode = "500", description = "失败")
     })
     @Operation(summary = "用户登录", description = "用户登录接口")
-    @ResponseBody
+
     @PostMapping("/submit")
     public Account submit(
         @Parameter(description = "用户名", required = true) @RequestParam String name,
@@ -54,9 +61,8 @@ public class MainController {
     /**
      * 添加用户，使用 application/json 方式传参，并校验某一个参数的必填性
      */
-    @ResponseBody
     @PostMapping(value = "/add", consumes = "application/json")
-    public ResultResponse addUser(
+    public ResultResponse<?> addUser(
             @Valid @RequestBody UserAddDTO param
     ) {
         User user = new User();
@@ -65,15 +71,16 @@ public class MainController {
         user.setPassword(param.getPassword());
         int uc = userMapper.insert(user);
         if (uc == 1) {
-            return ResultResponse.success(user);
+            UserListVO userListVO = new UserListVO();
+            BeanUtils.copyProperties(user, userListVO);
+            return ResultResponse.success(userListVO);
         } else {
             return ResultResponse.success(null);
         }
     }
 
-    @ResponseBody
     @GetMapping("/get")
-    public ResultResponse get(
+    public ResultResponse<?> get(
             @RequestParam String name
     ) {
         if (name == null || name.trim().isEmpty()) {
@@ -84,9 +91,8 @@ public class MainController {
         return  ResultResponse.success(user);
     }
 
-    @ResponseBody
     @GetMapping("/list")
-    public ResultResponse getList(
+    public ResultResponse<?> getList(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
             @RequestParam(required = false) String name
@@ -96,16 +102,16 @@ public class MainController {
                 Wrappers.<User>query()
                         .eq((name != null && !name.equals("")), "name", name)
                         .orderByDesc("id")
-                        .select("id", "name", "email")
+                        .select("id", "name", "email", "password", "create_time", "update_time")
         );
-        // TODO: 通过DTO类，构建只需要返给前端的字段，屏蔽掉User类中其他字段名，不需要将所有字段都返给前端（返给前端时，这些不需要的字段的值都是null）
+        // 通过VO类，构建只需要返给前端的字段，屏蔽掉User类中其他字段名，不需要将所有字段都返给前端（返给前端时，这些不需要的字段的值都是null）
         return getResultResponse(userPage);
     }
 
 //    TODO: 通过继承自 IService 接口的 service 查询数据
-    @ResponseBody
+
     @GetMapping("/list-service")
-    public ResultResponse getListByService (
+    public ResultResponse<?> getListByService (
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
             @RequestParam(required = false) String name
@@ -121,13 +127,17 @@ public class MainController {
         return getResultResponse(userPage);
     }
 
-    private ResultResponse getResultResponse(Page<User> userPage) {
-        Page<UserListDTO> userListDTOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
-        List<UserListDTO> userListDTOS = userPage.getRecords().stream().map(user -> {
-            return new UserListDTO(user.getId(), user.getName(), user.getEmail());
+    @SuppressWarnings("null")
+    private ResultResponse<?> getResultResponse(Page<User> userPage) {
+        Page<UserListVO> userListVOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
+        List<UserListVO> userListVOs = userPage.getRecords().stream().map(user -> {
+            UserListVO userListVO = new UserListVO();
+            BeanUtils.copyProperties(user, userListVO);
+            userListVO.setCreateTime(Objects.isNull(user.getCreateTime()) ? null : user.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            return userListVO;
         }).toList();
-        userListDTOPage.setRecords(userListDTOS);
-        return ResultResponse.success(userListDTOPage);
+        userListVOPage.setRecords(userListVOs);
+        return ResultResponse.success(userListVOPage);
     }
 
 

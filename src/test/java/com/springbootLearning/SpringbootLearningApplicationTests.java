@@ -1,29 +1,32 @@
 package com.springbootLearning;
 
-import com.springbootLearning.entity.User;
-import com.springbootLearning.mapper.UserMapper;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
+import java.util.Date;
 
 @SpringBootTest
 class SpringbootLearningApplicationTests {
 
-	@Autowired
-	UserMapper userMapper;
 
 	@Test
-	void contextLoads() {
-		User u = new User();
-		u.setName("Lisa");
-		u.setEmail("100292@qq.com");
-		u.setPassword("3456789");
-		int userCount = userMapper.insert(u);
-		System.out.println("插入用户：" + userCount);
-		/*User user = userMapper.selectById(1);
-		System.out.println(user);*/
+	void contextLoads() throws UnsupportedEncodingException {
+		String jwtKey = "asdfALDKF;SAasdf123";
+		Algorithm algorithm = Algorithm.HMAC256(jwtKey);
+		Calendar calendar = Calendar.getInstance();
+		Date now = calendar.getTime();
+		calendar.add(Calendar.SECOND, 3600 * 24 * 7);
+		String jwtToken = JWT.create()
+				.withClaim("id", 1)
+				.withClaim("name", "张三")
+				.withExpiresAt(calendar.getTime())
+				.withIssuedAt(now)
+				.sign(algorithm);
+		System.out.println(jwtToken);
 	}
 
 }

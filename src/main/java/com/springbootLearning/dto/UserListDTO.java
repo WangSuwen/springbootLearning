@@ -1,16 +1,15 @@
 package com.springbootLearning.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserListDTO {
-    private int id;
+    private Long id;
     private String name;
     private String email;
 
-    public UserListDTO(int id, String name, String email) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-    }
 }

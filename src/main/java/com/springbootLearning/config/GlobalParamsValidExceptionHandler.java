@@ -7,21 +7,29 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import com.springbootLearning.utils.ResultResponse;
+
+
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Configuration
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalParamsValidExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("code", ResultResponse.PARAMS_ERROR);
+        errors.put("data", null);
+        ArrayList<String> errorMsg = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            errorMsg.add(errorMessage);
         });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        errors.put("msg", errorMsg.stream().collect(Collectors.joining(",")));
+        return new ResponseEntity<>(errors, HttpStatus.OK);
     }
 }
