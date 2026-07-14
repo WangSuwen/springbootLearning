@@ -1,10 +1,10 @@
 package com.springbootLearning.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.springbootLearning.dto.UserAddDTO;
-import com.springbootLearning.dto.UserListDTO;
 import com.springbootLearning.entity.User;
 import com.springbootLearning.mapper.UserMapper;
 import com.springbootLearning.service.UserService;
@@ -17,8 +17,6 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.springbootLearning.entity.Account;
@@ -100,7 +98,7 @@ public class MainController {
         Page<User> userPage = userMapper.selectPage(
                 Page.of(current, size),
                 Wrappers.<User>query()
-                        .eq((name != null && !name.equals("")), "name", name)
+                        .eq((name != null && !"".equals(name)), "name", name)
                         .orderByDesc("id")
                         .select("id", "name", "email", "password", "create_time", "update_time")
         );
@@ -119,7 +117,7 @@ public class MainController {
         Page<User> userPage = userService.page(
                 Page.of(current, size),
                 Wrappers.<User>query()
-                        .eq((name != null && !name.equals("")), "name", name)
+                        .eq((name != null && !"".equals(name)), "name", name)
                         .orderByDesc("id")
                         .select("id", "name", "email")
         );
@@ -129,7 +127,8 @@ public class MainController {
 
     @SuppressWarnings("null")
     private ResultResponse<?> getResultResponse(Page<User> userPage) {
-        Page<UserListVO> userListVOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
+        // 构建返回的Page对象
+        /* Page<UserListVO> userListVOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
         List<UserListVO> userListVOs = userPage.getRecords().stream().map(user -> {
             UserListVO userListVO = new UserListVO();
             BeanUtils.copyProperties(user, userListVO);
@@ -137,7 +136,23 @@ public class MainController {
             return userListVO;
         }).toList();
         userListVOPage.setRecords(userListVOs);
-        return ResultResponse.success(userListVOPage);
+        return ResultResponse.success(userListVOPage); */
+        
+        // 构建返回的JSONObject
+        List<UserListVO> userListVOs = userPage.getRecords().stream().map(user -> {
+            UserListVO userListVO = new UserListVO();
+            BeanUtils.copyProperties(user, userListVO);
+            userListVO.setCreateTime(Objects.isNull(user.getCreateTime()) ? null : user.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            return userListVO;
+        }).toList();
+        JSONObject jsonObject = JSONObject.of(
+            "total", userPage.getTotal(),
+            "size", userPage.getSize(),
+            "current", userPage.getCurrent(),
+            "pages", userPage.getPages(),
+            "records", userListVOs
+        );
+        return ResultResponse.success(jsonObject);
     }
 
 
