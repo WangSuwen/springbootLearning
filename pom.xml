@@ -86,6 +86,24 @@
         </dependency>
 	</dependencies>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault> <!-- 默认是开发环境 -->
+            </activation>
+            <properties>
+                <profile.env>dev</profile.env> <!-- 定义一个变量叫 profile.env -->
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profile.env>prod</profile.env>
+            </properties>
+        </profile>
+    </profiles>
+
 	<build>
 		<plugins>
 			<plugin>
