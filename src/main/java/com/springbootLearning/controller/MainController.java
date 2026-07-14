@@ -31,6 +31,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
+import com.springbootLearning.annotation.LogRequired;
+
 @RestController
 @RequestMapping("/api/user")
 @Tag(name = "用户登录相关接口", description = "注册、登录、登出、修改密码、获取用户信息、发送短信等接口")
@@ -89,6 +91,7 @@ public class MainController {
         return  ResultResponse.success(user);
     }
 
+    @LogRequired(description = "查询用户列表")
     @GetMapping("/list")
     public ResultResponse<?> getList(
             @RequestParam(defaultValue = "1") long current,

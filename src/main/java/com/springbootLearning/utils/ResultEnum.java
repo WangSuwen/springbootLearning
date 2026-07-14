@@ -2,8 +2,10 @@ package com.springbootLearning.utils;
 
 public enum ResultEnum {
     SUCCESS(200, "请求成功"),
+    METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
     FAILED(5000, "系统错误"),
-    PARAMS_ERROR(1000, "参数错误");
+    PARAMS_ERROR(1000, "参数错误"),
+    ;
 
 
     private final int code;
