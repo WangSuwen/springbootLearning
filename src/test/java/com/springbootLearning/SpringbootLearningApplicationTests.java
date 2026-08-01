@@ -26,7 +26,7 @@ class SpringbootLearningApplicationTests {
 				.withExpiresAt(calendar.getTime())
 				.withIssuedAt(now)
 				.sign(algorithm);
-		System.out.println(jwtToken);
+		System.out.println("jwtToken----------- " + jwtToken);
 	}
 
 }

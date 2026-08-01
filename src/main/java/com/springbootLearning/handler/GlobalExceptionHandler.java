@@ -19,15 +19,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.springbootLearning.utils.ResultEnum;
 import org.springframework.beans.factory.annotation.Value;
 
-
-
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Description: 统一异常处理类
- * @Auther: Zhangjiashun
- * @create 2019/10/18 11:51
  */
 @RestControllerAdvice
 @Slf4j
@@ -78,16 +77,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResultResponse<?> valid(MethodArgumentNotValidException e) {
-        StringBuffer buffer = new StringBuffer();
-        BindingResult result  = e.getBindingResult();
-        if (result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
-            errors.forEach(p ->{
-                FieldError fieldError = (FieldError) p;
-                buffer.append(fieldError.getDefaultMessage()).append(",");
-            });
-        }
-        return ResultResponse.failed(ResultEnum.FAILED.valueOf(), buffer.toString());
+        ArrayList<String> errorMsg = new ArrayList<>();
+        e.getBindingResult().getAllErrors().forEach((error) -> {
+            String errorMessage = error.getDefaultMessage();
+            errorMsg.add(errorMessage);
+        });
+        return ResultResponse.failed(ResultEnum.PARAMS_ERROR.valueOf(), errorMsg.stream().collect(Collectors.joining(";")));
     }
 
 

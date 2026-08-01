@@ -48,6 +48,7 @@ spring:
     jpa:
         hibernate:
             ddl-auto: update
+        show-sql: true # 建议开启，这样你能在控制台看到它自动修改表结构的 ALTER TABLE 语句
 
 mybatis-plus:
     configuration:

@@ -1,13 +1,8 @@
 {
   "version": "1.0",
-  "timestamp": 1783912717297,
+  "timestamp": 1784018016974,
   "projectRoot": "/Users/wxq/learning/springbootLearning",
   "entries": [
-    {
-      "path": "target/classes/com/springbootLearning/config/SwaggerConfiguration.class",
-      "mtime": 1783909852857.7212,
-      "size": 1407
-    },
     {
       "path": "target/classes/com/springbootLearning/config/MybatisPlusConfig.class",
       "mtime": 1783912715959.1372,
@@ -17,6 +12,22 @@
           "com.springbootLearning.mapper"
         ],
         "sourceFile": "/Users/wxq/learning/springbootLearning/target/classes/com/springbootLearning/config/MybatisPlusConfig.class"
+      }
+    },
+    {
+      "path": "target/classes/com/springbootLearning/config/SwaggerConfiguration.class",
+      "mtime": 1784017946628.0818,
+      "size": 1407
+    },
+    {
+      "path": "target/classes/com/springbootLearning/SpringbootLearningApplication.class",
+      "mtime": 1784018015595.119,
+      "size": 2392,
+      "mapperScan": {
+        "basePackages": [
+          "com.springbootLearning.mapper"
+        ],
+        "sourceFile": "/Users/wxq/learning/springbootLearning/target/classes/com/springbootLearning/SpringbootLearningApplication.class"
       }
     }
   ]
